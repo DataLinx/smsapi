@@ -1,0 +1,23 @@
+{
+    "name": "datalinx/smsapi",
+    "type": "library",
+    "description": "Wrapper library for sending SMS messages SMSAPI.si",
+    "keywords": [
+        "SMS",
+        "smsapi"
+    ],
+    "homepage": "https://github.com/datalinx/smsapi",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Omer Sabic",
+            "email": "omer.sabic@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "DataLinx\\SMSAPI\\" : "src/" }
+    },
+    "require": {
+        "php": ">=5.3.2"
+    }
+}

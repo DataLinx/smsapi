@@ -1,2 +1,2 @@
-# SMSapi.si client
-This is a small library to use with the SMSapi.si provider.
+# SMSAPI.si client
+This is a small library to use with the SMSAPI.si provider.
