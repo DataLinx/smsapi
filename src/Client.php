@@ -93,8 +93,8 @@ class Client {
 		$message->validate();
 
 		$data = array(
-			'from' => $message->getFrom(),
-			'to' => $message->getTo(),
+			'from' => $this->cleanNumber($message->getFrom()),
+			'to' => $this->cleanNumber($message->getTo()),
 			'cc' => $message->getCountryCode(),
 			'm' => trim($message->getContent()),
 		);
@@ -137,6 +137,18 @@ class Client {
 		}
 
 		throw new Exception('API returned non-numeric value');
+	}
+
+	/**
+	 * Clean the mobile number of any invalid characters.<br/>
+	 * Removes any characters that are not digits. This will be automatically done for outgoing messages, you do not need to do it manually.
+	 *
+	 * @param string $number Number to clean
+	 * @return string
+	 */
+	public function cleanNumber($number)
+	{
+		return preg_replace('/\D/', '', $number);
 	}
 
 	private function _send($endpoint, $data = array())
