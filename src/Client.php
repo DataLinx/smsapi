@@ -11,6 +11,13 @@ class Client {
 
 	private $password;
 
+	/**
+	 * Sender ID
+	 *
+	 * @var string
+	 */
+	private $senderId;
+
 	private $ch;
 
 	public function __construct($username, $password)
@@ -51,6 +58,30 @@ class Client {
 	}
 
 	/**
+	 * Get sender ID
+	 *
+	 * @return string
+	 */
+	public function getSenderId()
+	{
+		return $this->senderId;
+	}
+
+	/**
+	 * Set (optional) Sender ID to use for sending.<br/>
+	 * Sender ID must be set up and confirmed on smsapi.si.
+	 *
+	 * @param string $senderId Sender ID
+	 * @return $this
+	 */
+	public function setSenderId($senderId)
+	{
+		$this->senderId = $senderId;
+
+		return $this;
+	}
+
+	/**
 	 * Send SMS message
 	 *
 	 * @param \DataLinx\SMSAPI\Message $message Message object
@@ -67,6 +98,11 @@ class Client {
 			'cc' => $message->getCountryCode(),
 			'm' => trim($message->getContent()),
 		);
+
+		if ($this->getSenderId()) {
+			$data['sid'] = 1;
+			$data['sname'] = $this->getSenderId();
+		}
 
 		$rs = trim($this->_send('poslji-sms', $data));
 
