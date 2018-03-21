@@ -1,6 +1,8 @@
 <?php
 namespace DataLinx\SMSAPI;
 
+use DataLinx\SMSAPI\Exception\ValidationException;
+
 class Message {
 
 	private $from;
@@ -72,8 +74,23 @@ class Message {
 		return $this;
 	}
 
+	/**
+	 * Run the pre-sending validation procedure
+	 *
+	 * @throws ValidationException
+	 */
 	public function validate()
 	{
+		$props = array('from', 'to', 'content', 'countryCode');
 
+		foreach ($props as $p) {
+			if (empty($this->$p)){
+				throw new ValidationException("Message property '$p' is required", ValidationException::CODE_REQUIRED, $p);
+			}
+		}
+
+		if ( ! preg_match('/^(\d{3}|\d{5})$/', $this->countryCode)) {
+			throw new ValidationException("Country code must be exactly 3 or 5 digits long", ValidationException::CODE_UNEXP_FORMAT, $p);
+		}
 	}
 }

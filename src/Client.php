@@ -13,7 +13,8 @@ class Client {
 
 	private $ch;
 
-	public function __construct($username, $password) {
+	public function __construct($username, $password)
+	{
 		$this->username = $username;
 		$this->password = $password;
 	}
@@ -49,7 +50,14 @@ class Client {
 		return $this;
 	}
 
-	public function message(Message $message)
+	/**
+	 * Send SMS message
+	 *
+	 * @param \DataLinx\SMSAPI\Message $message Message object
+	 * @return \DataLinx\SMSAPI\Response Response object
+	 * @throws APIError|Exception\ValidationException
+	 */
+	public function send(Message $message)
 	{
 		$message->validate();
 
@@ -57,7 +65,7 @@ class Client {
 			'from' => $message->getFrom(),
 			'to' => $message->getTo(),
 			'cc' => $message->getCountryCode(),
-			'm' => $message->getContent(),
+			'm' => trim($message->getContent()),
 		);
 
 		$rs = trim($this->_send('poslji-sms', $data));
@@ -88,8 +96,7 @@ class Client {
 	{
 		$rs = $this->_send('preveri-stanje-kreditov');
 
-		if (is_numeric($rs))
-		{
+		if (is_numeric($rs)) {
 			return (int)$rs;
 		}
 
@@ -123,8 +130,7 @@ class Client {
 
 		$response = curl_exec($this->ch);
 
-		if ( ! $response)
-		{
+		if ( ! $response) {
 			throw new Exception('cURL request failed! cURL error: '. curl_error($this->ch) .', HTTP status: '. curl_getinfo($this->ch, CURLINFO_HTTP_CODE), curl_errno($this->ch));
 		}
 

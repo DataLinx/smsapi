@@ -17,8 +17,6 @@ class Response {
 		// ID		Price Sender	 Recipient
 		// 3706989##0.02##070566062##070566062
 
-		$str = trim($str);
-
 		if (empty($str) OR strpos($str, '##') === FALSE) {
 			throw new Exception('Unexpected content in response: '. substr($str, 0, 200));
 		}
