@@ -2,6 +2,7 @@
 namespace DataLinx\SMSAPI;
 
 use DataLinx\SMSAPI\Exception\APIError;
+use DataLinx\SMSAPI\Exception\ValidationException;
 
 class Client {
 
@@ -12,6 +13,13 @@ class Client {
 	private $password;
 
 	/**
+	 * Sender number
+	 *
+	 * @var string
+	 */
+	private $senderNumber;
+
+	/**
 	 * Sender ID
 	 *
 	 * @var string
@@ -20,10 +28,18 @@ class Client {
 
 	private $ch;
 
-	public function __construct($username, $password)
+	/**
+	 * Create client instance
+	 *
+	 * @param string $username API username
+	 * @param string $password API password
+	 * @param string $senderNumber Sender (from) number - required for sending messages
+	 */
+	public function __construct($username, $password, $senderNumber)
 	{
 		$this->username = $username;
 		$this->password = $password;
+		$this->senderNumber = $senderNumber;
 	}
 
 	public function __destruct()
@@ -58,6 +74,29 @@ class Client {
 	}
 
 	/**
+	 * Get sender (from) number
+	 *
+	 * @return string
+	 */
+	public function getSenderNumber()
+	{
+		return $this->senderNumber;
+	}
+
+	/**
+	 * Set sender (from) number
+	 *
+	 * @param string $senderNumber Valid mobile number
+	 * @return $this
+	 */
+	public function setSenderNumber($senderNumber)
+	{
+		$this->senderNumber = $senderNumber;
+		
+		return $this;
+	}
+
+	/**
 	 * Get sender ID
 	 *
 	 * @return string
@@ -86,14 +125,16 @@ class Client {
 	 *
 	 * @param \DataLinx\SMSAPI\Message $message Message object
 	 * @return \DataLinx\SMSAPI\Response Response object
-	 * @throws APIError|Exception\ValidationException
+	 * @throws APIError|ValidationException
 	 */
 	public function send(Message $message)
 	{
+		$this->_validate('senderNumber');
+
 		$message->validate();
 
 		$data = array(
-			'from' => $this->cleanNumber($message->getFrom()),
+			'from' => $this->cleanNumber($this->getSenderNumber()),
 			'to' => $this->cleanNumber($message->getTo()),
 			'cc' => $message->getCountryCode(),
 			'm' => trim($message->getContent()),
@@ -117,6 +158,8 @@ class Client {
 
 	public function price()
 	{
+		$this->_validate();
+
 		$price = trim($this->_send('dobi-ceno'), '# ');
 
 		if (strpos($price, '##') !== FALSE) {
@@ -130,6 +173,8 @@ class Client {
 
 	public function creditStatus()
 	{
+		$this->_validate();
+
 		$rs = $this->_send('preveri-stanje-kreditov');
 
 		if (is_numeric($rs)) {
@@ -183,5 +228,27 @@ class Client {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * Run the pre-sending request validation procedure
+	 *
+	 * @throws ValidationException
+	 */
+	private function _validate()
+	{
+		$props = array('username', 'password');
+
+		$args = func_get_args();
+
+		if (is_array($args)) {
+			$props += $args;
+		}
+
+		foreach ($props as $p) {
+			if (empty($this->$p)){
+				throw new ValidationException("Client property '$p' is required", ValidationException::CODE_REQUIRED, $p);
+			}
+		}
 	}
 }

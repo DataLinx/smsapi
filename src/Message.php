@@ -5,8 +5,6 @@ use DataLinx\SMSAPI\Exception\ValidationException;
 
 class Message {
 
-	private $from;
-
 	private $to;
 
 	private $content;
@@ -18,17 +16,11 @@ class Message {
 	 */
 	private $countryCode;
 
-	public function __construct($from, $to, $content, $countryCode = '00386')
+	public function __construct($to, $content, $countryCode = '00386')
 	{
-		$this->from = $from;
 		$this->to = $to;
 		$this->content = $content;
 		$this->countryCode = $countryCode;
-	}
-
-	public function getFrom()
-	{
-		return $this->from;
 	}
 
 	public function getTo()
@@ -44,13 +36,6 @@ class Message {
 	public function getCountryCode()
 	{
 		return $this->countryCode;
-	}
-
-	public function setFrom($from)
-	{
-		$this->from = $from;
-
-		return $this;
 	}
 
 	public function setTo($to)
@@ -81,7 +66,7 @@ class Message {
 	 */
 	public function validate()
 	{
-		$props = array('from', 'to', 'content', 'countryCode');
+		$props = array('to', 'content', 'countryCode');
 
 		foreach ($props as $p) {
 			if (empty($this->$p)){
