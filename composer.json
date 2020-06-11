@@ -18,6 +18,7 @@
         "psr-4": { "DataLinx\\SMSAPI\\" : "src/" }
     },
     "require": {
-        "php": ">=5.3.2"
+        "php": ">=5.3.2",
+        "ext-curl": "*"
     }
 }

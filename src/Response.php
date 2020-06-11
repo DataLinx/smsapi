@@ -1,6 +1,8 @@
 <?php
 namespace DataLinx\SMSAPI;
 
+use Exception;
+
 class Response {
 
 	private $id;
