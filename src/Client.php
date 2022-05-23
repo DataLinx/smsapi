@@ -3,6 +3,7 @@ namespace DataLinx\SMSAPI;
 
 use DataLinx\SMSAPI\Exception\APIError;
 use DataLinx\SMSAPI\Exception\ValidationException;
+use Exception;
 
 class Client {
 
