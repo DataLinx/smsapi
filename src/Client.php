@@ -3,6 +3,7 @@ namespace DataLinx\SMSAPI;
 
 use DataLinx\SMSAPI\Exception\APIError;
 use DataLinx\SMSAPI\Exception\ValidationException;
+use Exception;
 
 class Client {
 
@@ -25,6 +26,13 @@ class Client {
 	 * @var string
 	 */
 	private $senderId;
+
+    /**
+     * Enable unicode SMS content
+     *
+     * @var bool
+     */
+    private $unicode;
 
 	private $ch;
 
@@ -120,6 +128,29 @@ class Client {
 		return $this;
 	}
 
+    /**
+     * Is unicode content enabled?
+     *
+     * @return bool
+     */
+    public function isUnicode()
+    {
+        return $this->unicode;
+    }
+
+    /**
+     * Enable/disable unicode content
+     *
+     * @param bool $unicode
+     * @return $this
+     */
+    public function setUnicode($unicode)
+    {
+        $this->unicode = $unicode;
+
+        return $this;
+    }
+
 	/**
 	 * Send SMS message
 	 *
@@ -144,6 +175,10 @@ class Client {
 			$data['sid'] = 1;
 			$data['sname'] = $this->getSenderId();
 		}
+
+        if ($this->isUnicode()) {
+            $data['unicode'] = 1;
+        }
 
 		$rs = trim($this->_send('poslji-sms', $data));
 
